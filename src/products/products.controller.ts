@@ -13,8 +13,15 @@ export class ProductsController {
   ) {}
 
   @Post()
-  createProduct(@Body() createProductDto: CreateProductDto) {
-    return this.productsClient.send({ cmd: 'create_product' }, createProductDto);
+  async createProduct(@Body() createProductDto: CreateProductDto) {
+    try {
+      return await firstValueFrom(
+        this.productsClient.send({ cmd: 'create_product' }, createProductDto)
+      )
+    } catch (error) {
+      throw new RpcException(error);
+    }
+
   }
 
   @Get()
