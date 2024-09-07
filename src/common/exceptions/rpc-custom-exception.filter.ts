@@ -12,10 +12,19 @@ export class RpcCustomExceptionFilter implements ExceptionFilter {
 
     const rpcError = exception.getError() as { message: string, status: number };
 
+    console.log('Rpc Error: ', rpcError.message);
+
+    if(rpcError.toString().includes('Empty response')) {
+      return response.status(500).json({
+        status: 500,
+        message: rpcError.message,
+      })
+    }
+
     if(typeof rpcError === 'object' && rpcError.status && rpcError.message ) {
       return response.status(rpcError.status).json({
         status: rpcError.status,
-        message: rpcError.message,
+        message: rpcError.toString(),
       })
     }
 
